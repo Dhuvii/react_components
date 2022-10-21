@@ -1,20 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-const Calender = () => {
+const GenerateCalendar = ({
+  generate_for_month,
+  offsetY,
+  parentRef,
+  setMonth,
+  parentMonth,
+}: {
+  generate_for_month: number;
+  offsetY: number;
+  parentRef: React.MutableRefObject<null>;
+  setMonth: any;
+  parentMonth: number;
+}) => {
+  const calendar_ref = useRef(null);
   const date = new Date();
   const [year, setYear] = useState<number>(date.getFullYear());
-  const [month, setMonth] = useState<number>(date.getMonth());
-  const [today, setToday] = useState<number>(date.getDate());
-  const [days, setDays] = useState<number[]>([]);
   const [start_inactive_days_list, setStart_inactive_days_list] = useState<
     number[]
   >([]);
-
-  let first_day_of_month = new Date(year, month, 1).getDay(); // getting first day of month
-  let last_date_of_month = new Date(year, month + 1, 0).getDate(); // getting last date of month
-  let last_date_of_last_month = new Date(year, month, 0).getDate(); // getting last date of previous month
+  const [days, setDays] = useState<number[]>([]);
 
   useEffect(() => {
+    let first_day_of_month = new Date(year, generate_for_month, 1).getDay(); // getting first day of month
+    let last_date_of_month = new Date(
+      year,
+      generate_for_month + 1,
+      0
+    ).getDate(); // getting last date of month
+
+    let last_date_of_last_month = new Date(
+      year,
+      generate_for_month,
+      0
+    ).getDate(); // getting last date of previous month
+
     const d: number[] = [];
     const s_i_d: number[] = [];
     for (let index = first_day_of_month - 1; index > 0; index--) {
@@ -25,7 +45,60 @@ const Calender = () => {
     }
     setDays(d);
     setStart_inactive_days_list(s_i_d);
-  }, [year, month]);
+  }, [year, generate_for_month]);
+
+  const calculateYpos = () => {
+    const target: any = calendar_ref.current;
+    const position = target.getBoundingClientRect();
+    const yPos = position.top - offsetY + 0.5;
+    return yPos;
+  };
+
+  const setPosition = () => {
+    const target: any = calendar_ref.current;
+    const position = target.getBoundingClientRect();
+    const yPos = position.top - offsetY + 0.5;
+    if (yPos < 20 && yPos > -20) {
+      setMonth(generate_for_month);
+    }
+  };
+
+  useEffect(() => {
+    if (calendar_ref && calendar_ref.current) {
+      setPosition();
+    }
+    if (parentRef && parentRef.current) {
+      const target: any = parentRef.current;
+      target.addEventListener("scroll", (e: any) => {
+        setPosition();
+      });
+    }
+  }, [calendar_ref, offsetY, parentRef]);
+
+  return (
+    <div
+      ref={calendar_ref}
+      className="w-[90%] p-5 grid grid-cols-7 grid-rows-4 gap-y-6 place-items-center"
+    >
+      {start_inactive_days_list.map((day, idx) => (
+        <span key={idx} className="text-base text-[#414754]">
+          {day}
+        </span>
+      ))}
+
+      {days.map((day, idx) => (
+        <span key={idx} className="text-base text-[#737A8C]">
+          {day}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+const Calender = () => {
+  const date = new Date();
+  const [month, setMonth] = useState<number>(date.getMonth());
+  const calendar_container_ref = useRef(null);
 
   const day_list = [
     "monday",
@@ -52,18 +125,29 @@ const Calender = () => {
     "December",
   ];
 
+  const [offsetY, setOffsetY] = useState(-1);
+
+  const handleSetOffset = () => {
+    const target: any = calendar_container_ref.current;
+    const position = target.getBoundingClientRect();
+    const offset = target.offsetTop;
+    setOffsetY(offset);
+  };
+  useEffect(() => {
+    if (calendar_container_ref && calendar_container_ref.current) {
+      handleSetOffset();
+    }
+  }, [calendar_container_ref]);
+
+  const handleMonthChange = (month: number) => {
+    //@ts-ignore
+    calendar_container_ref.current.children[month].scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   return (
-    // <div className="w-72">
-    //   <div className="grid grid-cols-7 grid-rows-4 items-center justify-center">
-    //     {day_list.map((day_name) => (
-    //       <span>{day_name.slice(0, 3)}</span>
-    //     ))}
-    //     {days.map((day) => (
-    //       <span>{day}</span>
-    //     ))}
-    //   </div>
-    // </div>
-    <div className="w-full max-w-2xl rounded-md border shadow bg-[#21242B] border-[#4D515C]">
+    <div className="w-full  max-w-2xl rounded-md border shadow bg-[#21242B] border-[#4D515C]">
       <div className="w-full flex items-start justify-between">
         {/* months and year */}
         <div className="">
@@ -76,14 +160,14 @@ const Calender = () => {
                   idx === month && "border-r-2 "
                 }`}
               >
-                <button onClick={() => setMonth(idx)}>{mon}</button>
+                <button onClick={() => handleMonthChange(idx)}>{mon}</button>
               </li>
             ))}
           </ul>
         </div>
 
         {/* calendar */}
-        <div className="w-full flex flex-col items-center justify-center">
+        <div className="w-full  flex flex-col items-center justify-start">
           {/* days list */}
           <div className="w-[90%] p-5 grid grid-cols-7 place-items-center border-b border-[#4D515C]">
             {day_list.map((day, idx) => (
@@ -92,17 +176,22 @@ const Calender = () => {
               </h3>
             ))}
           </div>
-          <div className="w-[90%] p-5 grid grid-cols-7 grid-rows-4 gap-y-6 place-items-center">
-            {start_inactive_days_list.map((day, idx) => (
-              <span key={idx} className="text-base text-[#414754]">
-                {day}
-              </span>
-            ))}
 
-            {days.map((day, idx) => (
-              <span key={idx} className="text-base text-[#737A8C]">
-                {day}
-              </span>
+          <div
+            ref={calendar_container_ref}
+            onScroll={() => handleSetOffset()}
+            className="w-full h-[30rem] pb-[14rem] flex flex-col items-center justify-start overflow-y-auto scroll-m-0 snap-y"
+          >
+            {month_list.map((m, idx) => (
+              <div key={idx} className="w-full snap-start">
+                <GenerateCalendar
+                  generate_for_month={idx}
+                  offsetY={offsetY}
+                  parentRef={calendar_container_ref}
+                  setMonth={setMonth}
+                  parentMonth={month}
+                />
+              </div>
             ))}
           </div>
         </div>
