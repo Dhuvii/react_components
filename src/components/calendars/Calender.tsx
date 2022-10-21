@@ -180,10 +180,13 @@ const Calender = () => {
           <div
             ref={calendar_container_ref}
             onScroll={() => handleSetOffset()}
-            className="w-full h-[30rem] pb-[14rem] flex flex-col items-center justify-start overflow-y-auto scroll-m-0 snap-y"
+            className="w-full h-[30rem] pb-[14rem] overflow-y-auto scroll-m-0 snap-y"
           >
             {month_list.map((m, idx) => (
-              <div key={idx} className="w-full snap-start">
+              <div
+                key={idx}
+                className="w-full flex flex-col items-center justify-start   snap-start"
+              >
                 <GenerateCalendar
                   generate_for_month={idx}
                   offsetY={offsetY}
