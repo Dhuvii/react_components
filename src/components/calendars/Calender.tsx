@@ -1,17 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const month_list = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const GenerateCalendar = ({
   generate_for_month,
   offsetY,
   parentRef,
   setMonth,
   parentMonth,
+  selections,
 }: {
+  showMonth?: boolean;
+  setMonth?: any;
   generate_for_month: number;
   offsetY: number;
   parentRef: React.MutableRefObject<null>;
-  setMonth: any;
   parentMonth: number;
+  selections: {
+    day?: number;
+    range?: {
+      date: number;
+      type: "start" | "end" | "mid";
+    }[];
+  };
 }) => {
   const calendar_ref = useRef(null);
   const date = new Date();
@@ -20,6 +44,7 @@ const GenerateCalendar = ({
     number[]
   >([]);
   const [days, setDays] = useState<number[]>([]);
+  const [yPosition, setYPosition] = useState(0);
 
   useEffect(() => {
     let first_day_of_month = new Date(year, generate_for_month, 1).getDay(); // getting first day of month
@@ -58,6 +83,7 @@ const GenerateCalendar = ({
     const target: any = calendar_ref.current;
     const position = target.getBoundingClientRect();
     const yPos = position.top - offsetY + 0.5;
+    setYPosition(yPos);
     if (yPos < 20 && yPos > -20) {
       setMonth(generate_for_month);
     }
@@ -76,21 +102,28 @@ const GenerateCalendar = ({
   }, [calendar_ref, offsetY, parentRef]);
 
   return (
-    <div
-      ref={calendar_ref}
-      className="w-[90%] p-5 grid grid-cols-7 grid-rows-4 gap-y-6 place-items-center"
-    >
-      {start_inactive_days_list.map((day, idx) => (
-        <span key={idx} className="text-base text-[#414754]">
-          {day}
-        </span>
-      ))}
+    <div ref={calendar_ref} className="w-[90%] p-5 ">
+      <div className="w-full grid grid-cols-7 gap-y-4 place-items-center">
+        {start_inactive_days_list.map((day, idx) => (
+          <span key={idx} className="p-4 text-base text-[#414754]">
+            {day}
+          </span>
+        ))}
 
-      {days.map((day, idx) => (
-        <span key={idx} className="text-base text-[#737A8C]">
-          {day}
-        </span>
-      ))}
+        {days.map((day, idx) => (
+          <button>
+            <span key={idx} className={`p-4 text-base text-[#737A8C]`}>
+              {day}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div className="pl-4">
+        <h1 className="mt-10 font-bold text-white text-base">
+          {month_list[generate_for_month + 1]}
+        </h1>
+      </div>
     </div>
   );
 };
@@ -108,21 +141,6 @@ const Calender = () => {
     "friday",
     "saturday",
     "sunday",
-  ];
-
-  const month_list = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
   ];
 
   const [offsetY, setOffsetY] = useState(-1);
@@ -147,11 +165,11 @@ const Calender = () => {
   };
 
   return (
-    <div className="w-full  max-w-2xl rounded-md border shadow bg-[#21242B] border-[#4D515C]">
+    <div className="w-full max-w-2xl rounded-md border shadow bg-[#21242B] border-[#4D515C]">
       <div className="w-full flex items-start justify-between">
         {/* months and year */}
         <div className="">
-          <ul className="w-44 py-3 flex flex-col items-start justify-start border-r border-[#4D515C]">
+          <ul className="w-44 sticky py-3 flex flex-col items-start justify-start border-r border-[#4D515C]">
             {/*  */}
             {month_list.map((mon, idx: number) => (
               <li
@@ -167,7 +185,12 @@ const Calender = () => {
         </div>
 
         {/* calendar */}
-        <div className="w-full  flex flex-col items-center justify-start">
+        <div className="w-full overflow-auto flex flex-col items-center justify-start">
+          <div className="mt-3 w-full flex items-center justify-center">
+            <h1 className="text-lg font-bold text-white">
+              {month_list[month]}
+            </h1>
+          </div>
           {/* days list */}
           <div className="w-[90%] p-5 grid grid-cols-7 place-items-center border-b border-[#4D515C]">
             {day_list.map((day, idx) => (
@@ -180,12 +203,12 @@ const Calender = () => {
           <div
             ref={calendar_container_ref}
             onScroll={() => handleSetOffset()}
-            className="w-full h-[30rem] pb-[14rem] overflow-y-auto scroll-m-0 snap-y"
+            className="w-full h-auto max-h-[27rem] pb-[9rem] overflow-y-auto scroll-m-0 snap-y"
           >
             {month_list.map((m, idx) => (
               <div
                 key={idx}
-                className="w-full flex flex-col items-center justify-start   snap-start"
+                className="w-full flex flex-col items-center justify-start snap-start"
               >
                 <GenerateCalendar
                   generate_for_month={idx}
@@ -193,6 +216,9 @@ const Calender = () => {
                   parentRef={calendar_container_ref}
                   setMonth={setMonth}
                   parentMonth={month}
+                  selections={{
+                    day: 24,
+                  }}
                 />
               </div>
             ))}
