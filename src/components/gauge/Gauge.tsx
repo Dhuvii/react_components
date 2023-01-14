@@ -32,54 +32,59 @@ const Gauge = () => {
   }, [cont]);
 
   return (
-    <div
-      ref={cont}
-      className="w-full h-full aspect-square relative rounded-full "
-    >
-      {width && (
-        <>
-          <div
-            style={{ transform: `translate(-50%,-50%)` }}
-            className="absolute z-50 top-[50%] left-[50%] w-[90%] h-[90%] rounded-full bg-white"
-          ></div>
-          {Array.from({ length: main_divisions }, (_, i) => i + 1).map(
-            (pos, idx) => (
-              <div
-                key={Math.random() * main_divisions * 10000}
-                style={{
-                  rotate: `${(180 / main_divisions) * idx}deg`,
-                  left: `${(width - 3) / 2}px`,
-                  width: `${3}px`,
-                  height: `${100}%`,
-                }}
-                //192
-                className="absolute z-50 rounded-full bg-gray-500"
-              ></div>
-            )
-          )}
+    <div className="w-full h-full">
+      <div
+        ref={cont}
+        className="w-full h-full aspect-square relative overflow-hidden"
+      >
+        {width && (
+          <div className="absolute inset-0">
+            {Array.from({ length: main_divisions }, (_, i) => i + 1).map(
+              (pos, idx) => (
+                <div
+                  key={Math.random() * main_divisions * 10000}
+                  style={{
+                    rotate: `${(180 / main_divisions) * idx}deg`,
+                    left: `${(width - 3) / 2}px`,
+                    width: `${3}px`,
+                    height: `${100}%`,
+                  }}
+                  className="absolute z-50 rounded-full"
+                >
+                  <div className="w-full h-full relative">
+                    <div className="absolute inset-x-0 top-0 h-10 bg-gray-500 rounded-full z-50"></div>
+                    <div className="absolute inset-x-0 bottom-0 h-10 bg-gray-500 rounded-full z-50"></div>
+                  </div>
+                </div>
+              )
+            )}
 
-          <div
-            style={{ transform: `translate(-50%,-50%)` }}
-            className="absolute z-50 top-[50%] left-[50%] w-[85%] h-[85%] rounded-full bg-white"
-          ></div>
+            {Array.from({ length: sub_divisions }, (_, i) => i + 1).map(
+              (pos, idx) => (
+                <div
+                  key={Math.random() * sub_divisions * 10000}
+                  style={{
+                    rotate: `${(180 / sub_divisions) * idx}deg`,
+                    left: `${(width - 2) / 2}px`,
+                    top: `${(width * (100 - 100)) / 200}px`,
+                    width: `${2}px`,
+                    height: `${100}%`,
+                  }}
+                  className={`absolute z-30 rounded-full `}
+                >
+                  <div className="w-full h-full relative">
+                    <div className="absolute inset-x-0 top-0 h-5 bg-gray-500 rounded-full z-50"></div>
+                    <div className="absolute inset-x-0 bottom-0 h-5 bg-gray-500 rounded-full z-50"></div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        )}
 
-          {Array.from({ length: sub_divisions }, (_, i) => i + 1).map(
-            (pos, idx) => (
-              <div
-                key={Math.random() * sub_divisions * 10000}
-                style={{
-                  rotate: `${(180 / sub_divisions) * idx}deg`,
-                  left: `${(width - 2) / 2}px`,
-                  top: `${(width * (100 - 95)) / 200}px`,
-                  width: `${2}px`,
-                  height: `${95}%`,
-                }}
-                className={`absolute z-30 rounded-full bg-gray-400`}
-              ></div>
-            )
-          )}
-        </>
-      )}
+        {/* cut out */}
+        {/* <div className="absolute z-[60] inset-x-0 h-[49.65%] bg-white bottom-0 rounded-b-full"></div> */}
+      </div>
     </div>
   );
 };
