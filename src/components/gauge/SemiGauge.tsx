@@ -3,16 +3,14 @@ import { useEffect, useRef, useState } from "react";
 const SemiGauge = ({
   value,
   max,
-  mainDivisions,
-  subDivisions,
+  mainDivisions = 10,
+  subDivisions = 50,
 }: {
   value: number;
   max?: number;
   mainDivisions?: number;
   subDivisions?: number;
 }) => {
-  const main_divisions = 10 || mainDivisions;
-  const sub_divisions = 50 || subDivisions;
   const TOTAL_NUMBER_OF_DIVISIONS = 180;
   const maximum = max || 100;
 
@@ -97,13 +95,13 @@ const SemiGauge = ({
           >
             <div className="">
               {/* main points */}
-              {Array.from({ length: main_divisions }, (_, i) => i + 1).map(
+              {Array.from({ length: mainDivisions }, (_, i) => i + 1).map(
                 (pos, idx) => (
                   <div
-                    key={Math.random() * main_divisions * 10000}
+                    key={Math.random() * mainDivisions * 10000}
                     style={{
                       rotate: `${
-                        (TOTAL_NUMBER_OF_DIVISIONS / main_divisions) * idx
+                        (TOTAL_NUMBER_OF_DIVISIONS / mainDivisions) * idx
                       }deg`,
                       bottom: 0,
                       height: `${3}px`,
@@ -120,13 +118,13 @@ const SemiGauge = ({
               )}
 
               {/* sub points */}
-              {Array.from({ length: sub_divisions }, (_, i) => i + 1).map(
+              {Array.from({ length: subDivisions }, (_, i) => i + 1).map(
                 (pos, idx) => (
                   <div
-                    key={Math.random() * sub_divisions * 10000}
+                    key={Math.random() * subDivisions * 10000}
                     style={{
                       rotate: `${
-                        (TOTAL_NUMBER_OF_DIVISIONS / sub_divisions) * idx
+                        (TOTAL_NUMBER_OF_DIVISIONS / subDivisions) * idx
                       }deg`,
                       bottom: `${0}`,
                       left: `${(width * (100 - 100)) / 200}px`,
@@ -152,42 +150,41 @@ const SemiGauge = ({
           >
             <div className="w-[80%] h-[80%] relative rounded-t-full">
               <div className="absolute inset-x-0 bottom-1">
-                {Array.from(
-                  { length: main_divisions + 1 },
-                  (_, i) => i + 1
-                ).map((_, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      rotate: `${
-                        (TOTAL_NUMBER_OF_DIVISIONS / main_divisions) * idx
-                      }deg`,
-                      height: `${3}px`,
-                      width: `${100}%`,
-                    }}
-                    className="absolute top-[50%] w-full h-[3px] z-[100]"
-                  >
-                    <div className="relative inset-0 w-full h-full flex items-center justify-center">
-                      <div
-                        style={{
-                          rotate: `-${
-                            (TOTAL_NUMBER_OF_DIVISIONS / main_divisions) * idx
-                          }deg`,
-                        }}
-                        className="absolute left-0 "
-                      >
-                        <span className="text-xs text-gray-500">
-                          {Math.ceil(
-                            ((TOTAL_NUMBER_OF_DIVISIONS / main_divisions) *
-                              idx *
-                              maximum) /
-                              TOTAL_NUMBER_OF_DIVISIONS
-                          )}
-                        </span>
+                {Array.from({ length: mainDivisions + 1 }, (_, i) => i + 1).map(
+                  (_, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        rotate: `${
+                          (TOTAL_NUMBER_OF_DIVISIONS / mainDivisions) * idx
+                        }deg`,
+                        height: `${3}px`,
+                        width: `${100}%`,
+                      }}
+                      className="absolute top-[50%] w-full h-[3px] z-[100]"
+                    >
+                      <div className="relative inset-0 w-full h-full flex items-center justify-center">
+                        <div
+                          style={{
+                            rotate: `-${
+                              (TOTAL_NUMBER_OF_DIVISIONS / mainDivisions) * idx
+                            }deg`,
+                          }}
+                          className="absolute left-0 "
+                        >
+                          <span className="text-xs text-gray-500">
+                            {Math.ceil(
+                              ((TOTAL_NUMBER_OF_DIVISIONS / mainDivisions) *
+                                idx *
+                                maximum) /
+                                TOTAL_NUMBER_OF_DIVISIONS
+                            )}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -199,13 +196,13 @@ const SemiGauge = ({
           >
             <div className="w-[90%] h-[90%] relative rounded-t-full">
               <div className="absolute inset-x-0 bottom-2">
-                {Array.from({ length: sub_divisions }, (_, i) => i + 1).map(
+                {Array.from({ length: subDivisions }, (_, i) => i + 1).map(
                   (_, idx) => (
                     <div
                       key={idx}
                       style={{
                         rotate: `${
-                          (TOTAL_NUMBER_OF_DIVISIONS / sub_divisions) * idx
+                          (TOTAL_NUMBER_OF_DIVISIONS / subDivisions) * idx
                         }deg`,
                         height: `${3}px`,
                         width: `${100}%`,
@@ -216,19 +213,19 @@ const SemiGauge = ({
                         <div
                           style={{
                             rotate: `-${
-                              (TOTAL_NUMBER_OF_DIVISIONS / sub_divisions) * idx
+                              (TOTAL_NUMBER_OF_DIVISIONS / subDivisions) * idx
                             }deg`,
                           }}
                           className="absolute left-0 "
                         >
-                          {((TOTAL_NUMBER_OF_DIVISIONS / main_divisions) *
-                            (idx % (sub_divisions / main_divisions)) *
+                          {((TOTAL_NUMBER_OF_DIVISIONS / mainDivisions) *
+                            (idx % (subDivisions / mainDivisions)) *
                             maximum) /
                             TOTAL_NUMBER_OF_DIVISIONS !==
                             0 && (
                             <span className="text-[6px] text-gray-400">
                               {Math.ceil(
-                                ((TOTAL_NUMBER_OF_DIVISIONS / sub_divisions) *
+                                ((TOTAL_NUMBER_OF_DIVISIONS / subDivisions) *
                                   idx *
                                   maximum) /
                                   TOTAL_NUMBER_OF_DIVISIONS
