@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Calender from "./components/calendars/Calender";
 import { HorizontalCalendar } from "./components/calendars/HorizontalCalendar";
 import Gauge from "./components/gauge/Gauge";
@@ -7,7 +7,6 @@ import BarProgress from "./components/progress/BarProgress";
 
 function App() {
   const [value, setValue] = useState(0);
-
   // useEffect(() => {
   //   let int: any;
   //   if (value < 100) {
@@ -23,12 +22,17 @@ function App() {
   //   };
   // }, []);
 
+  const [counter, setCounter] = useState(0);
+
   return (
     <div className="w-full min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-xl mx-auto">
-        {/* <SemiGauge value={value} max={100} />*/}
+      <div className="w-full max-w-3xl mx-auto">
+        <SemiGauge value={value} max={100} />
 
-        <BarProgress percentage={value} />
+        {/* <BarProgress percentage={value} /> */}
+        {/* <div className="mt-20">
+          <BarProgress percentage={30} />
+        </div> */}
 
         <div className="mt-32 w-full">
           <input

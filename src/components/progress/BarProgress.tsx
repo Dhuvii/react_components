@@ -85,7 +85,7 @@ const BarProgress = ({ percentage = 0 }: { percentage: number }) => {
         <div className="absolute -top-[25px] inset-x-0">
           <div
             ref={progressEl}
-            className={`relative h-[3.5px] rounded-full bg-blue-500 ${
+            className={`relative h-[3.5px] rounded-full bg-transparent ${
               percentage <= 0 && "opacity-0"
             }`}
           >
