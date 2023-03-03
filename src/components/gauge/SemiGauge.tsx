@@ -71,12 +71,12 @@ const SemiGauge = ({
 
           <div className="relative inset-0">
             {/* border */}
-            {/* <div
-            style={{ width, height: width / 2 }}
-            className="absolute bottom-[2px] flex items-end justify-center"
-          >
-            <div className="z-[80] w-[100%] h-[100%] relative rounded-t-full border-gray-500 border-4 border-b-0"></div>
-          </div> */}
+            <div
+              style={{ width, height: width / 2 }}
+              className="absolute bottom-[2px] flex items-end justify-center"
+            >
+              <div className="z-[80] w-[100%] h-[100%] relative rounded-t-full border-gray-500 border-4 border-b-0"></div>
+            </div>
 
             {/* inner details */}
             <div

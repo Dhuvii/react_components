@@ -48,6 +48,8 @@ function App() {
           <h6 className="text-sm uppercase text-gray-800">{value}</h6>
         </div>
       </div>
+
+      <Calender />
     </div>
   );
 }
